@@ -1,0 +1,13 @@
+.sidebar-page > .link:hover {
+  background: #1572e8;
+  color: #fff;
+}
+
+.sidebar-page > .link {
+  color: #5b5858;
+}
+.sidebar-page > .active {
+  background: #1572e8;
+  color: #fff;
+  opacity: 1;
+}
