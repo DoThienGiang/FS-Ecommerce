@@ -1,451 +1,3 @@
-// import React, { Fragment, useRef, useState, useEffect } from "react";
-// import "./LoginSignUp.css";
-// import Loader from "../layout/Loader/Loader";
-// import { Link, useLocation, useNavigate } from "react-router-dom";
-// import Profile from "../../images/Profile.png";
-// // import MailOutlineIcon from "@material-ui/icons/MailOutline";
-// // import LockOpenIcon from "@material-ui/icons/LockOpen";
-// // import FaceIcon from "@material-ui/icons/Face";
-// // import { useAlert } from "react-alert";
-// // import { Alert } from "@mui/material";
-// import { useDispatch, useSelector } from "react-redux";
-// import { clearErrors, login, register } from "../../actions/userAction";
-// import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
-// import PasswordIcon from "@mui/icons-material/Password";
-// import LockOpenIcon from "@mui/icons-material/LockOpen";
-// import FaceIcon from "@mui/icons-material/Face";
-
-// const LoginSignUp = ({ history }) => {
-//   const dispatch = useDispatch();
-//   const location = useLocation();
-//   const navigate = useNavigate();
-//   // const history = unstable_HistoryRouter();
-//   // const alert = useAlert();
-
-//   const { error, loading, isAuthenticated } = useSelector(
-//     (state) => state.user
-//   );
-
-//   const loginTab = useRef(null);
-//   const registerTab = useRef(null);
-//   const switcherTab = useRef(null);
-
-//   const [loginEmail, setLoginEmail] = useState("");
-//   const [loginPassword, setLoginPassword] = useState("");
-
-//   const [user, setUser] = useState({
-//     name: "",
-//     email: "",
-//     password: "",
-//   });
-
-//   const { name, email, password } = user;
-
-//   const [avatar, setAvatar] = useState(Profile);
-//   const [avatarPreview, setAvatarPreview] = useState(Profile);
-
-//   const loginSubmit = (e) => {
-//     e.preventDefault();
-//     dispatch(login(loginEmail, loginPassword));
-//   };
-
-//   const registerSubmit = (e) => {
-//     e.preventDefault();
-//     const myForm = new FormData();
-//     const dataForm = {
-//       name: name,
-//       email: email,
-//       password: password,
-//       avatar: avatar,
-//     };
-//     myForm.set("name", name);
-//     myForm.set("email", email);
-//     myForm.set("password", password);
-//     myForm.set("avatar", avatar);
-//     dispatch(register(dataForm));
-//     console.log("myForm~", myForm);
-//     console.log("email~", email);
-//     console.log("password~", password);
-//     console.log("avatar~", avatar);
-//     console.log("name~", myForm.set("name", name));
-//   };
-
-//   const registerDataChange = (e) => {
-//     if (e.target.name === "avatar") {
-//       const reader = new FileReader();
-
-//       reader.onload = () => {
-//         if (reader.readyState === 2) {
-//           setAvatarPreview(reader.result);
-//           setAvatar(reader.result);
-//         }
-//       };
-
-//       reader.readAsDataURL(e.target.files[0]);
-//     } else {
-//       setUser({ ...user, [e.target.name]: e.target.value });
-//     }
-//   };
-
-//   const redirect = location?.search ? location?.search.split("=")[1] : "/";
-//   console.log("location~", redirect);
-//   useEffect(() => {
-//     if (error) {
-//       // alert.error(error);
-//       // Alert.error(error);
-//       dispatch(clearErrors());
-//     }
-
-//     if (isAuthenticated) {
-//       // history?.push(redirect);
-//       navigate(redirect);
-//     }
-//   }, [dispatch, error, alert, history, isAuthenticated, redirect]);
-
-//   const switchTabs = (e, tab) => {
-//     if (tab === "login") {
-//       switcherTab.current.classList.add("shiftToNeutral");
-//       switcherTab.current.classList.remove("shiftToRight");
-
-//       registerTab.current.classList.remove("shiftToNeutralForm");
-//       loginTab.current.classList.remove("shiftToLeft");
-//     }
-//     if (tab === "register") {
-//       switcherTab.current.classList.add("shiftToRight");
-//       switcherTab.current.classList.remove("shiftToNeutral");
-
-//       registerTab.current.classList.add("shiftToNeutralForm");
-//       loginTab.current.classList.add("shiftToLeft");
-//     }
-//   };
-
-//   return (
-//     <Fragment>
-//       {loading ? (
-//         <Loader />
-//       ) : (
-//         <Fragment>
-//           <div className="LoginSignUpContainer">
-//             <div className="LoginSignUpBox">
-//               <div>
-//                 <div className="login_signUp_toggle">
-//                   <p onClick={(e) => switchTabs(e, "login")}>LOGIN</p>
-//                   <p onClick={(e) => switchTabs(e, "register")}>REGISTER</p>
-//                 </div>
-//                 <button ref={switcherTab}></button>
-//               </div>
-//               <form className="loginForm" ref={loginTab} onSubmit={loginSubmit}>
-//                 <div className="loginEmail">
-//                   {/* <MailOutlineIcon /> */}
-//                   <AlternateEmailIcon />
-//                   <input
-//                     type="email"
-//                     placeholder="Email"
-//                     required
-//                     value={loginEmail}
-//                     onChange={(e) => setLoginEmail(e.target.value)}
-//                   />
-//                 </div>
-//                 <div className="loginPassword">
-//                   {/* <PasswordIcon /> */}
-//                   <LockOpenIcon />
-//                   <input
-//                     type="password"
-//                     placeholder="Password"
-//                     required
-//                     value={loginPassword}
-//                     onChange={(e) => setLoginPassword(e.target.value)}
-//                   />
-//                 </div>
-//                 <Link to="/password/forgot">Forget Password ?</Link>
-//                 <input type="submit" value="Login" className="loginBtn" />
-//               </form>
-//               <form
-//                 className="signUpForm"
-//                 ref={registerTab}
-//                 encType="multipart/form-data"
-//                 onSubmit={registerSubmit}
-//               >
-//                 <div className="signUpName">
-//                   <FaceIcon />
-//                   <input
-//                     type="text"
-//                     placeholder="Name"
-//                     required
-//                     name="name"
-//                     value={name}
-//                     onChange={registerDataChange}
-//                   />
-//                 </div>
-//                 <div className="signUpEmail">
-//                   <AlternateEmailIcon />
-//                   <input
-//                     type="email"
-//                     placeholder="Email"
-//                     required
-//                     name="email"
-//                     value={email}
-//                     onChange={registerDataChange}
-//                   />
-//                 </div>
-//                 <div className="signUpPassword">
-//                   <LockOpenIcon />
-//                   <input
-//                     type="password"
-//                     placeholder="Password"
-//                     required
-//                     name="password"
-//                     value={password}
-//                     onChange={registerDataChange}
-//                   />
-//                 </div>
-
-//                 <div id="registerImage">
-//                   <img src={avatarPreview} alt="Avatar Preview" />
-//                   <input
-//                     type="file"
-//                     name="avatar"
-//                     accept="image/*"
-//                     onChange={registerDataChange}
-//                   />
-//                 </div>
-//                 <input type="submit" value="Register" className="signUpBtn" />
-//               </form>
-//             </div>
-//           </div>
-//         </Fragment>
-//       )}
-//     </Fragment>
-//   );
-// };
-
-// export default LoginSignUp;
-
-// import React, { Fragment, useRef, useState, useEffect } from "react";
-// import "./LoginSignUp.css";
-// import Loader from "../layout/Loader/Loader";
-// import { Link, useLocation, useNavigate } from "react-router-dom";
-// import Profile from "../../images/Profile.png";
-// // import MailOutlineIcon from "@material-ui/icons/MailOutline";
-// // import LockOpenIcon from "@material-ui/icons/LockOpen";
-// // import FaceIcon from "@material-ui/icons/Face";
-// // import { useAlert } from "react-alert";
-// // import { Alert } from "@mui/material";
-// import { useDispatch, useSelector } from "react-redux";
-// import { clearErrors, login, register } from "../../actions/userAction";
-// import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
-// import PasswordIcon from "@mui/icons-material/Password";
-// import LockOpenIcon from "@mui/icons-material/LockOpen";
-// import FaceIcon from "@mui/icons-material/Face";
-
-// const LoginSignUp = ({ history }) => {
-//   const dispatch = useDispatch();
-//   const location = useLocation();
-//   const navigate = useNavigate();
-//   // const history = unstable_HistoryRouter();
-//   // const alert = useAlert();
-
-//   const { error, loading, isAuthenticated } = useSelector(
-//     (state) => state.user
-//   );
-
-//   const loginTab = useRef(null);
-//   const registerTab = useRef(null);
-//   const switcherTab = useRef(null);
-
-//   const [loginEmail, setLoginEmail] = useState("");
-//   const [loginPassword, setLoginPassword] = useState("");
-
-//   const [user, setUser] = useState({
-//     name: "",
-//     email: "",
-//     password: "",
-//   });
-
-//   const { name, email, password } = user;
-
-//   const [avatar, setAvatar] = useState(Profile);
-//   const [avatarPreview, setAvatarPreview] = useState(Profile);
-
-//   const loginSubmit = (e) => {
-//     e.preventDefault();
-//     dispatch(login(loginEmail, loginPassword));
-//   };
-
-//   const registerSubmit = (e) => {
-//     e.preventDefault();
-//     const myForm = new FormData();
-//     const dataForm = {
-//       name: name,
-//       email: email,
-//       password: password,
-//       avatar: avatar,
-//     };
-//     myForm.set("name", name);
-//     myForm.set("email", email);
-//     myForm.set("password", password);
-//     myForm.set("avatar", avatar);
-//     dispatch(register(dataForm));
-//     console.log("myForm~", myForm);
-//     console.log("email~", email);
-//     console.log("password~", password);
-//     console.log("avatar~", avatar);
-//     console.log("name~", myForm.set("name", name));
-//   };
-
-//   const registerDataChange = (e) => {
-//     if (e.target.name === "avatar") {
-//       const reader = new FileReader();
-
-//       reader.onload = () => {
-//         if (reader.readyState === 2) {
-//           setAvatarPreview(reader.result);
-//           setAvatar(reader.result);
-//         }
-//       };
-
-//       reader.readAsDataURL(e.target.files[0]);
-//     } else {
-//       setUser({ ...user, [e.target.name]: e.target.value });
-//     }
-//   };
-
-//   const redirect = location?.search
-//     ? location?.search.split("=")[1]
-//     : "/account";
-//   console.log("location~", redirect);
-//   useEffect(() => {
-//     if (error) {
-//       // alert.error(error);
-//       // Alert.error(error);
-//       dispatch(clearErrors());
-//     }
-
-//     if (isAuthenticated) {
-//       // history?.push(redirect);
-//       navigate(redirect);
-//     }
-//   }, [dispatch, error, alert, history, isAuthenticated, redirect]);
-
-//   const switchTabs = (e, tab) => {
-//     if (tab === "login") {
-//       switcherTab.current.classList.add("shiftToNeutral");
-//       switcherTab.current.classList.remove("shiftToRight");
-
-//       registerTab.current.classList.remove("shiftToNeutralForm");
-//       loginTab.current.classList.remove("shiftToLeft");
-//     }
-//     if (tab === "register") {
-//       switcherTab.current.classList.add("shiftToRight");
-//       switcherTab.current.classList.remove("shiftToNeutral");
-
-//       registerTab.current.classList.add("shiftToNeutralForm");
-//       loginTab.current.classList.add("shiftToLeft");
-//     }
-//   };
-
-//   return (
-//     <Fragment>
-//       {loading ? (
-//         <Loader />
-//       ) : (
-//         <Fragment>
-//           <div className="LoginSignUpContainer">
-//             <div className="LoginSignUpBox">
-//               <div>
-//                 <div className="login_signUp_toggle">
-//                   <p onClick={(e) => switchTabs(e, "login")}>LOGIN</p>
-//                   <p onClick={(e) => switchTabs(e, "register")}>REGISTER</p>
-//                 </div>
-//                 <button ref={switcherTab}></button>
-//               </div>
-//               <form className="loginForm" ref={loginTab} onSubmit={loginSubmit}>
-//                 <div className="loginEmail">
-//                   {/* <MailOutlineIcon /> */}
-//                   <AlternateEmailIcon />
-//                   <input
-//                     type="email"
-//                     placeholder="Email"
-//                     required
-//                     value={loginEmail}
-//                     onChange={(e) => setLoginEmail(e.target.value)}
-//                   />
-//                 </div>
-//                 <div className="loginPassword">
-//                   {/* <PasswordIcon /> */}
-//                   <LockOpenIcon />
-//                   <input
-//                     type="password"
-//                     placeholder="Password"
-//                     required
-//                     value={loginPassword}
-//                     onChange={(e) => setLoginPassword(e.target.value)}
-//                   />
-//                 </div>
-//                 <Link to="/password/forgot">Forget Password ?</Link>
-//                 <input type="submit" value="Login" className="loginBtn" />
-//               </form>
-//               <form
-//                 className="signUpForm"
-//                 ref={registerTab}
-//                 encType="multipart/form-data"
-//                 onSubmit={registerSubmit}
-//               >
-//                 <div className="signUpName">
-//                   <FaceIcon />
-//                   <input
-//                     type="text"
-//                     placeholder="Name"
-//                     required
-//                     name="name"
-//                     value={name}
-//                     onChange={registerDataChange}
-//                   />
-//                 </div>
-//                 <div className="signUpEmail">
-//                   <AlternateEmailIcon />
-//                   <input
-//                     type="email"
-//                     placeholder="Email"
-//                     required
-//                     name="email"
-//                     value={email}
-//                     onChange={registerDataChange}
-//                   />
-//                 </div>
-//                 <div className="signUpPassword">
-//                   <LockOpenIcon />
-//                   <input
-//                     type="password"
-//                     placeholder="Password"
-//                     required
-//                     name="password"
-//                     value={password}
-//                     onChange={registerDataChange}
-//                   />
-//                 </div>
-
-//                 <div id="registerImage">
-//                   <img src={avatarPreview} alt="Avatar Preview" />
-//                   <input
-//                     type="file"
-//                     name="avatar"
-//                     accept="image/*"
-//                     onChange={registerDataChange}
-//                   />
-//                 </div>
-//                 <input type="submit" value="Register" className="signUpBtn" />
-//               </form>
-//             </div>
-//           </div>
-//         </Fragment>
-//       )}
-//     </Fragment>
-//   );
-// };
-
-// export default LoginSignUp;
-
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../images/cartShopNow.png";
@@ -458,16 +10,24 @@ import Profile from "../../images/Profile.png";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, login, register } from "../../actions/userAction";
 import useClickEye from "../../hooks/useClickEye";
+import { VscError } from "react-icons/vsc";
+import LoadingSpin from "../layout/Loader/LoadingSpin";
 
 const LoginSignUp = ({ registerSwitch = false }) => {
-  const [show, setShow] = useState(registerSwitch);
-  const [hiddenPassword, setHiddenPassword] = useState(true);
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const alert = useAlert();
+  let regexEmail =
+    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  let regexPassword =
+    /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+
+  const [show, setShow] = useState(registerSwitch);
+  const [hiddenPassword, setHiddenPassword] = useState(true);
   const { click, setClick } = useClickEye();
   const {
+    loading,
     error,
     isAuthenticated,
     user: userFromData,
@@ -489,11 +49,13 @@ const LoginSignUp = ({ registerSwitch = false }) => {
 
   const loginSubmit = (e) => {
     e.preventDefault();
+    console.log("error", error);
     dispatch(login(loginEmail, loginPassword));
   };
 
   const registerSubmit = (e) => {
     e.preventDefault();
+    setAvatarHiddenInvalidEmail(true);
     const myForm = new FormData();
     const dataForm = {
       name: name,
@@ -508,8 +70,11 @@ const LoginSignUp = ({ registerSwitch = false }) => {
 
     dispatch(register(dataForm));
   };
-
+  const [hiddenInvalidEmail, setAvatarHiddenInvalidEmail] = useState(true);
   const registerDataChange = (e) => {
+    if (e.target.name === "email") {
+      setAvatarHiddenInvalidEmail(false);
+    }
     if (e.target.name === "avatar") {
       const reader = new FileReader();
 
@@ -529,11 +94,6 @@ const LoginSignUp = ({ registerSwitch = false }) => {
   const redirect = location?.search ? location?.search.split("=")[1] : "/";
 
   useEffect(() => {
-    if (error) {
-      alert.error(error);
-      dispatch(clearErrors());
-    }
-
     if (isAuthenticated) {
       userFromData.role === "admin"
         ? navigate("/admin/dashboard")
@@ -543,30 +103,52 @@ const LoginSignUp = ({ registerSwitch = false }) => {
 
   return (
     <div className="mt-20">
-      <div className="flex justify-around items-center p-10 bg-primary h-[600px]">
+      <div className="flex justify-around items-center p-10 bg-primary min-h-[600px]">
         <div className="">
           <img src={Logo} alt="" className="w-96 h-96" />
         </div>
         {!show ? (
           <form
-            className="p-8 bg-white shadow-lg w-[400px] h-[410px] rounded-md flex flex-col"
+            className="p-8 bg-white shadow-lg w-[400px] h-auto rounded-md flex flex-col"
             onSubmit={loginSubmit}
           >
             <h1 className="text-xl mb-8">Đăng nhập</h1>
+            {error && (
+              <div className="flex items-start gap-2 bg-taghot bg-opacity-5 border border-taghot rounded-[2px] mb-8 p-2">
+                <VscError size={24} className="text-taghot"></VscError>
+                <p className="text-sm">
+                  {error === "Invalid email or password" &&
+                    "Tên tài khoản của bạn hoặc Mật khẩu không đúng, vui lòng thử lại"}
+                </p>
+              </div>
+            )}
             <div className="w-full h-10 mb-8">
               <input
-                className="w-full h-full pl-3 pr-8 border border-slate-200 outline-1 outline-none focus:border-graytagp focus:shadow-md"
+                className={`${
+                  error && !loginEmail
+                    ? "bg-taghot bg-opacity-5 border border-taghot focus:border-taghot rounded-[2px]"
+                    : ""
+                } w-full h-full pl-3 pr-8 border border-slate-200 outline-1 outline-none focus:border-graytagp focus:shadow-md`}
                 placeholder="Email của bạn?"
                 autoFocus
                 value={loginEmail}
                 onChange={(e) => setLoginEmail(e.target.value)}
               />
+              {error && !loginEmail && (
+                <p className="text-xs text-taghot mt-1">
+                  Vui lòng điền vào mục này.
+                </p>
+              )}
             </div>
-            <div className="relative w-full h-10  mb-8 flex justify-between border-">
+            <div className="relative w-full h-10 flex justify-between border-">
               <input
                 maxLength={15}
                 type={`${hiddenPassword ? "password" : "text"}`}
-                className="w-full h-full pl-3 pr-8 border border-slate-200 outline-1 outline-none focus:border-graytagp focus:shadow-md"
+                className={`${
+                  error && !loginPassword
+                    ? "bg-taghot bg-opacity-5 border border-taghot focus:border-taghot rounded-[2px]"
+                    : ""
+                } w-full h-full pl-3 pr-8 border border-slate-200 outline-1 outline-none focus:border-graytagp focus:shadow-md`}
                 placeholder="Mật khẩu của bạn?"
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
@@ -582,11 +164,17 @@ const LoginSignUp = ({ registerSwitch = false }) => {
                 )}
               </div>
             </div>
+            {error && !loginPassword && (
+              <p className="text-xs text-taghot mt-1">
+                Vui lòng điền vào mục này.
+              </p>
+            )}
             <button
               type="submit"
-              className="uppercase w-full h-10 bg-[#43c6ac] text-white text-base tracking-widest opacity-80 hover:opacity-100 rounded"
+              disabled={!loginEmail || !loginPassword}
+              className="flex items-center justify-center uppercase w-full h-10 bg-[#43c6ac] text-white text-base tracking-widest opacity-80 hover:opacity-100 rounded disabled:cursor-wait disabled:bg-opacity-60 disabled:hover:opacity-80 mt-8"
             >
-              Đăng nhập
+              {loading ? <LoadingSpin></LoadingSpin> : "Đăng nhập"}
             </button>
             <div className="float-right">
               <Link
@@ -609,42 +197,75 @@ const LoginSignUp = ({ registerSwitch = false }) => {
           </form>
         ) : (
           <form
-            className="p-8 bg-white shadow-lg w-[400px] h-[520px] rounded-md flex flex-col"
+            className="p-8 bg-white shadow-lg w-[400px] h-auto rounded-md flex flex-col"
             encType="multipart/form-data"
             onSubmit={registerSubmit}
           >
             <h1 className="text-xl mb-8">Đăng ký</h1>
-            <div className="w-full h-10  mb-8">
+            {error && (
+              <div className="flex items-start gap-2 bg-taghot bg-opacity-5 border border-taghot rounded-[2px] mb-8 p-2">
+                <VscError size={24} className="text-taghot"></VscError>
+                <p className="text-sm">
+                  {error && "Thông tin không hợp lệ, vui lòng thử lại"}
+                </p>
+              </div>
+            )}
+            <div className="w-full h-10 mb-8">
               <input
-                className="w-full h-full pl-3 pr-8 border border-slate-200 outline-1 outline-none focus:border-graytagp focus:shadow-md"
+                className={`${
+                  error && name.length < 4
+                    ? "bg-taghot bg-opacity-5 border border-taghot focus:border-taghot rounded-[2px]"
+                    : ""
+                } w-full h-full pl-3 pr-8 border border-slate-200 outline-1 outline-none focus:border-graytagp focus:shadow-md`}
                 placeholder="Tên của bạn?"
                 autoFocus
                 name="name"
                 value={name}
                 onChange={registerDataChange}
               />
+              {error && name.length < 4 && (
+                <p className="text-xs text-taghot mt-1">
+                  Tên phải có nhiều hơn hoặc bằng 4 ký tự!
+                </p>
+              )}
             </div>
-            <div className="w-full h-10  mb-8">
+            <div className="w-full h-10 mb-8">
               <input
-                className="w-full h-full pl-3 pr-8 border border-slate-200 outline-1 outline-none focus:border-graytagp focus:shadow-md"
+                className={`${
+                  error && !regexEmail.test(email)
+                    ? "bg-taghot bg-opacity-5 border border-taghot focus:border-taghot rounded-[2px]"
+                    : ""
+                } w-full h-full pl-3 pr-8 border border-slate-200 outline-1 outline-none focus:border-graytagp focus:shadow-md`}
                 placeholder="Email của bạn?"
                 name="email"
                 value={email}
                 onChange={registerDataChange}
               />
+              {error && !regexEmail.test(email) && (
+                <p className="text-xs text-taghot mt-1">Email không hợp lệ!</p>
+              )}
+              {hiddenInvalidEmail && error === "Duplicate email Entered" && (
+                <p className="text-xs text-taghot mt-1">
+                  Email đã tồn tại, vui lòng thử Email khác
+                </p>
+              )}
             </div>
-            <div className=" relative w-full h-10 mb-8 flex justify-between border-">
+            <div className="relative w-full h-10 flex justify-between border-">
               <input
                 maxLength={15}
                 type={`${click ? "password" : "text"}`}
-                className="w-full h-full pl-3 pr-8 border border-slate-200 outline-1 outline-none focus:border-graytagp focus:shadow-md"
+                className={`${
+                  error && !regexPassword.test(password)
+                    ? "bg-taghot bg-opacity-5 border border-taghot focus:border-taghot rounded-[2px]"
+                    : ""
+                } w-full h-full pl-3 pr-8 border border-slate-200 outline-1 outline-none focus:border-graytagp focus:shadow-md`}
                 placeholder="Mật khẩu của bạn?"
                 name="password"
                 value={password}
                 onChange={registerDataChange}
               />
-              <button
-                className="absolute right-4 top-3"
+              <div
+                className="absolute right-4 top-3 cursor-pointer"
                 onClick={() => setClick(!click)}
               >
                 {click ? (
@@ -652,21 +273,18 @@ const LoginSignUp = ({ registerSwitch = false }) => {
                 ) : (
                   <FaEye size={20} className="text-graytagp" />
                 )}
-              </button>
+              </div>
             </div>
+            {error && !regexPassword.test(password) && (
+              <p className="text-xs text-taghot mt-1">
+                Mật khẩu tối thiểu 8 ký tự, ít nhất 1 chữ cái viết hoa, 1 số và
+                1 ký tự đặc biệt!
+              </p>
+            )}
             <div
               id="registerImage"
-              className="flex items-center justify-between gap-3 w-full h-10 mb-8"
+              className="flex items-center justify-between gap-3 w-full h-10 my-8"
             >
-              {/* <input
-                type="file"
-                className="rounded-md text-base block w-full text-gray-500
-      file:mr-4 file:py-2 file:px-4
-      file:rounded-md file:border-0
-      file:text-sm file:font-semibold
-      file:bg-blue-500 file:text-white
-      hover:file:bg-blue-600"
-              /> */}
               <img
                 src={avatarPreview}
                 alt="Avatar Preview"
@@ -682,9 +300,10 @@ const LoginSignUp = ({ registerSwitch = false }) => {
             <button
               type="submit"
               value="Register"
-              className="uppercase w-full h-10 bg-[#43c6ac] text-white text-base tracking-widest opacity-80 hover:opacity-100 rounded"
+              disabled={!name || !email || !password || !avatar}
+              className="flex items-center justify-center uppercase w-full h-10 bg-[#43c6ac] text-white text-base tracking-widest opacity-80 hover:opacity-100 rounded disabled:cursor-wait disabled:bg-opacity-60 disabled:hover:opacity-80"
             >
-              Đăng ký
+              {loading ? <LoadingSpin></LoadingSpin> : "Đăng ký"}
             </button>
             <div className="flex justify-center mt-8 text-sm">
               <h2 className="text-graytagp">Bạn đã có tài khoản?</h2>

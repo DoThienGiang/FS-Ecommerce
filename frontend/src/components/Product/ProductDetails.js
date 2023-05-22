@@ -1,290 +1,3 @@
-// import React, { Fragment, useEffect, useState } from "react";
-// import "./ProductDetails.css";
-// import ReactStars from "react-rating-stars-component";
-// // import { Rating } from "@material-ui/lab";
-// import {
-//   Dialog,
-//   DialogActions,
-//   DialogContent,
-//   DialogTitle,
-//   Button,
-// } from "@mui/material";
-// import { useSelector, useDispatch } from "react-redux";
-// import {
-//   clearErrors,
-//   getProductDetails,
-//   newReview,
-// } from "../../actions/productAction";
-// import ReviewCard from "./ReviewCard.js";
-// import Loader from "../layout/Loader/Loader";
-// import MetaData from "../layout/MetaData";
-// // import { useAlert } from "react-alert";
-// import { addItemsToCart } from "../../actions/cartAction";
-// import { NEW_REVIEW_RESET } from "../../constants/productConstants";
-// import { useParams } from "react-router-dom";
-// import Rating from "@mui/material/Rating";
-// import StarIcon from "@mui/icons-material/Star";
-// import { Swiper, SwiperSlide } from "swiper/react";
-// import { Pagination } from "swiper";
-// import "swiper/css";
-// import "swiper/css/pagination";
-
-// const ProductDetails = ({ match }) => {
-//   const dispatch = useDispatch();
-//   const { idProduct } = useParams();
-//   // const alert = useAlert();
-
-//   const { product, loading, error } = useSelector(
-//     (state) => state.productDetails
-//   );
-
-//   console.log("product", product);
-
-//   const { success, error: reviewError } = useSelector(
-//     (state) => state.newReview
-//   );
-
-//   const options = {
-//     value: product?.ratings,
-//     readOnly: true,
-//     precision: 0.5,
-//   };
-
-//   const [quantity, setQuantity] = useState(1);
-//   const [open, setOpen] = useState(false);
-//   const [rating, setRating] = useState(5);
-//   const [comment, setComment] = useState("");
-
-//   const increaseQuantity = () => {
-//     console.log("increase");
-//     if (product?.Stock <= quantity) return;
-//     const qty = quantity + 1;
-//     setQuantity(qty);
-//   };
-
-//   const decreaseQuantity = () => {
-//     console.log("decrease");
-//     if (1 >= quantity) return;
-//     const qty = quantity - 1;
-//     setQuantity(qty);
-//   };
-
-//   const addToCartHandler = () => {
-//     dispatch(addItemsToCart(idProduct || match?.params?.id, quantity));
-//     // alert.success("Item Added To Cart");
-//   };
-
-//   const submitReviewToggle = () => {
-//     open ? setOpen(false) : setOpen(true);
-//   };
-
-//   const reviewSubmitHandler = () => {
-//     const myForm = new FormData();
-
-//     myForm.set("rating", rating);
-//     myForm.set("comment", comment);
-//     myForm.set("productId", idProduct || match?.params?.id);
-
-//     dispatch(newReview(myForm));
-
-//     setOpen(false);
-//   };
-//   console.log("idProduct", idProduct);
-//   useEffect(() => {
-//     if (error) {
-//       // alert.error(error);
-//       dispatch(clearErrors());
-//     }
-
-//     if (reviewError) {
-//       // alert.error(reviewError);
-//       dispatch(clearErrors());
-//     }
-
-//     if (success) {
-//       // alert.success("Review Submitted Successfully");
-//       dispatch({ type: NEW_REVIEW_RESET });
-//     }
-//     dispatch(getProductDetails(idProduct || match?.params?.id));
-//   }, [
-//     dispatch,
-//     idProduct || match?.params?.id,
-//     error,
-//     alert,
-//     reviewError,
-//     success,
-//   ]);
-//   const ratingChanged = (newRating) => {
-//     console.log(newRating);
-//     setRating(newRating);
-//   };
-//   const currentDate = new Date().toLocaleDateString("en-GB");
-//   const prevDate = new Date(product?.createAt).toLocaleDateString("en-GB");
-//   return (
-//     <Fragment>
-//       {loading ? (
-//         <Loader />
-//       ) : (
-//         <Fragment>
-//           <MetaData title={`${product?.name} -- ECOMMERCE`} />
-//           <div className="ProductDetails">
-//             {/* <div> */}
-//             <Swiper
-//               pagination={{
-//                 dynamicBullets: true,
-//               }}
-//               modules={[Pagination]}
-//               className="mySwiper"
-//             >
-//               {product?.images &&
-//                 product?.images.map((item, i) => (
-//                   <SwiperSlide>
-//                     <img
-//                       className="CarouselImage"
-//                       key={i}
-//                       src={item.url}
-//                       alt={`${i} Slide`}
-//                     />
-//                   </SwiperSlide>
-//                 ))}
-//             </Swiper>
-//             {/* </div> */}
-
-//             <div>
-//               <div className="detailsBlock-1">
-//                 {product?.numOfReviews > 9 && product?.ratings > 4 && (
-//                   <span className="text-xs bg-taghot text-white shadow-sm px-3">
-//                     Yêu thích
-//                   </span>
-//                 )}
-//                 {currentDate === prevDate && (
-//                   <span className="text-xs bg-tagnew text-white px-3">New</span>
-//                 )}
-//                 <h2>{product?.name}</h2>
-//                 <p>Product # {product?._id}</p>
-//               </div>
-//               <div className="detailsBlock-2">
-//                 <Rating
-//                   name="text-feedback size-small"
-//                   size="small"
-//                   emptyIcon={
-//                     <StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />
-//                   }
-//                   {...options}
-//                 />
-//                 {/* <ReactStars
-//                   count={5}
-//                   onChange={ratingChanged}
-//                   size={24}
-//                   isHalf={true}
-//                   emptyIcon={<i className="far fa-star"></i>}
-//                   halfIcon={<i className="fa fa-star-half-alt"></i>}
-//                   fullIcon={<i className="fa fa-star"></i>}
-//                   activeColor="#ffd700"
-//                   {...options}
-//                 /> */}
-//                 <span className="detailsBlock-2-span">
-//                   ({product?.numOfReviews} Reviews)
-//                 </span>
-//               </div>
-//               <div className="detailsBlock-3">
-//                 <h1 className="text-primary">{`₫${product?.price?.toLocaleString(
-//                   "it-IT"
-//                 )}`}</h1>
-//                 <div className="detailsBlock-3-1">
-//                   <div className="detailsBlock-3-1-1">
-//                     <button onClick={decreaseQuantity}>-</button>
-//                     <input readOnly type="number" value={quantity} />
-//                     <button onClick={increaseQuantity}>+</button>
-//                   </div>
-//                   <button
-//                     disabled={product?.Stock < 1 ? true : false}
-//                     onClick={addToCartHandler}
-//                   >
-//                     Add to Cart
-//                   </button>
-//                 </div>
-
-//                 <p>
-//                   Status:
-//                   <b className={product?.Stock < 1 ? "redColor" : "greenColor"}>
-//                     {product?.Stock < 1 ? "OutOfStock" : "InStock"}
-//                   </b>
-//                 </p>
-//               </div>
-
-//               <div className="detailsBlock-4">
-//                 Description : <p>{product?.description}</p>
-//               </div>
-
-//               <button onClick={submitReviewToggle} className="submitReview">
-//                 Submit Review
-//               </button>
-//             </div>
-//           </div>
-
-//           <h3 className="reviewsHeading">REVIEWS</h3>
-
-//           <Dialog
-//             aria-labelledby="simple-dialog-title"
-//             open={open}
-//             onClose={submitReviewToggle}
-//           >
-//             <DialogTitle>Submit Review</DialogTitle>
-//             <DialogContent className="submitDialog">
-//               {/* <Rating
-//                 onChange={(e) => setRating(e.target.value)}
-//                 value={rating}
-//                 size="large"
-//               /> */}
-//               <ReactStars
-//                 count={5}
-//                 onChange={ratingChanged}
-//                 value={5}
-//                 precision={0.5}
-//                 size={24}
-//                 isHalf={true}
-//                 emptyIcon={<i className="far fa-star"></i>}
-//                 halfIcon={<i className="fa fa-star-half-alt"></i>}
-//                 fullIcon={<i className="fa fa-star"></i>}
-//                 activeColor="#ffd700"
-//               />
-
-//               <textarea
-//                 className="submitDialogTextArea"
-//                 cols="30"
-//                 rows="5"
-//                 value={comment}
-//                 onChange={(e) => setComment(e.target.value)}
-//               ></textarea>
-//             </DialogContent>
-//             <DialogActions>
-//               <Button onClick={submitReviewToggle} color="secondary">
-//                 Cancel
-//               </Button>
-//               <Button onClick={reviewSubmitHandler} color="primary">
-//                 Submit
-//               </Button>
-//             </DialogActions>
-//           </Dialog>
-
-//           {product?.reviews && product?.reviews[0] ? (
-//             <div className="reviews">
-//               {product?.reviews &&
-//                 product?.reviews.map((review) => (
-//                   <ReviewCard key={review._id} review={review} />
-//                 ))}
-//             </div>
-//           ) : (
-//             <p className="noReviews">No Reviews Yet</p>
-//           )}
-//         </Fragment>
-//       )}
-//     </Fragment>
-//   );
-// };
-
-// export default ProductDetails;
 import React, { Fragment, useEffect, useState } from "react";
 import "./ProductDetails.css";
 import ReactStars from "react-rating-stars-component";
@@ -301,6 +14,7 @@ import {
   getProductDetails,
   newReview,
 } from "../../actions/productAction";
+import { myOrders } from "../../actions/orderAction";
 import ReviewCard from "./ReviewCard.js";
 import Loader from "../layout/Loader/Loader";
 import MetaData from "../layout/MetaData";
@@ -340,11 +54,15 @@ const ProductDetails = ({ match }) => {
   const { hovered, nodeRef } = useHover();
   const alert = useAlert();
 
+  const [showComment, setShowComment] = useState(true);
+
   const { product, loading, error } = useSelector(
     (state) => state.productDetails
   );
+  const { orders } = useSelector((state) => state.myOrders);
 
-  console.log("product", product);
+  // console.log("orders", orders);
+  // console.log("product", product);
 
   const { success, error: reviewError } = useSelector(
     (state) => state.newReview
@@ -376,6 +94,7 @@ const ProductDetails = ({ match }) => {
     setQuantity(qty);
     setQuantityEqualZero(false);
   };
+
   let prevQuantity;
   const changeQuantity = (e) => {
     let qty = Number(e.target.value);
@@ -389,7 +108,6 @@ const ProductDetails = ({ match }) => {
     setQuantity(qty);
     setQuantityEqualZero(false);
   };
-  console.log("quantity", quantity);
   const [quantityEqualZero, setQuantityEqualZero] = useState(false);
   const quantityFocusOut = () => {
     if (Number(quantity) == "") return setQuantityEqualZero(true);
@@ -405,6 +123,17 @@ const ProductDetails = ({ match }) => {
 
   const submitReviewToggle = () => {
     open ? setOpen(false) : setOpen(true);
+    dispatch(myOrders());
+    orders &&
+      orders.map(
+        (items) =>
+          items.orderStatus === "Delivered" &&
+          items.orderItems.map((item) => {
+            if (item.product === idProduct) {
+              return setShowComment(false);
+            }
+          })
+      );
   };
 
   const reviewSubmitHandler = () => {
@@ -418,7 +147,7 @@ const ProductDetails = ({ match }) => {
 
     setOpen(false);
   };
-  console.log("idProduct", idProduct);
+  // console.log("idProduct", idProduct);
   useEffect(() => {
     if (error) {
       alert.error(error);
@@ -567,7 +296,7 @@ const ProductDetails = ({ match }) => {
                     <div className="text-center flex justify-center mr-4">
                       <button
                         disabled={product?.Stock < 1 ? true : false}
-                        className="border border-[#d3d3d3] w-8 h-8 flex justify-center items-center"
+                        className="border border-[#d3d3d3] w-8 h-8 flex justify-center items-center disabled:cursor-wait"
                         onClick={decreaseQuantity}
                       >
                         <BsDash />
@@ -579,12 +308,12 @@ const ProductDetails = ({ match }) => {
                         onChange={changeQuantity}
                         className={`w-12 h-8 text-center p-2 border border-t-[#d3d3d3] border-b-[#d3d3d3] outline-none focus:outline-primary z-10 ${
                           quantityEqualZero && "outline-taghot"
-                        }`}
+                        }  disabled:cursor-wait`}
                         onBlur={quantityFocusOut}
                       />
                       <button
                         disabled={product?.Stock < 1 ? true : false}
-                        className="border border-[#d3d3d3] w-8 h-8 flex justify-center items-center"
+                        className="border border-[#d3d3d3] w-8 h-8 flex justify-center items-center disabled:cursor-wait"
                         onClick={increaseQuantity}
                       >
                         <GrFormAdd />
@@ -612,7 +341,7 @@ const ProductDetails = ({ match }) => {
                         : false
                     }
                     onClick={addToCartHandler}
-                    className="flex items-center gap-2 text-primary opacity-80 hover:opacity-100 border border-primary shadow-primary py-2 px-5 mt-5"
+                    className="flex items-center gap-2 text-primary opacity-80 hover:opacity-100 border border-primary shadow-primary py-2 px-5 mt-5 disabled:cursor-wait"
                   >
                     <BsCartPlus></BsCartPlus>
                     Thêm Vào Giỏ Hàng
@@ -650,51 +379,70 @@ const ProductDetails = ({ match }) => {
               onClose={submitReviewToggle}
               className="w-[800px] mx-auto"
             >
-              <DialogTitle>Đánh Giá Sản Phẩm</DialogTitle>
-              <DialogContent className="">
-                <div className="flex items-center gap-2">
-                  <h2 className="mr-10">Chất lượng sản phẩm</h2>
-                  <ReactStars
-                    count={5}
-                    onChange={ratingChanged}
-                    value={5}
-                    precision={0.5}
-                    size={24}
-                    isHalf={true}
-                    emptyIcon={<i className="far fa-star"></i>}
-                    halfIcon={<i className="fa fa-star-half-alt"></i>}
-                    fullIcon={<i className="fa fa-star"></i>}
-                    activeColor="#ffd700"
-                  />
-                  <p
-                    className={`${
-                      rating > 3 ? "text-tagnew" : "text-graytagp"
-                    }`}
-                  >
-                    {labels[rating]}
-                  </p>
-                </div>
+              {!showComment ? (
+                <Fragment>
+                  <DialogTitle>Đánh Giá Sản Phẩm</DialogTitle>
+                  <DialogContent className="">
+                    <div className="flex items-center gap-2">
+                      <h2 className="mr-10">Chất lượng sản phẩm</h2>
+                      <ReactStars
+                        count={5}
+                        onChange={ratingChanged}
+                        value={5}
+                        precision={0.5}
+                        size={24}
+                        isHalf={true}
+                        emptyIcon={<i className="far fa-star"></i>}
+                        halfIcon={<i className="fa fa-star-half-alt"></i>}
+                        fullIcon={<i className="fa fa-star"></i>}
+                        activeColor="#ffd700"
+                      />
+                      <p
+                        className={`${
+                          rating > 3 ? "text-tagnew" : "text-graytagp"
+                        }`}
+                      >
+                        {labels[rating]}
+                      </p>
+                    </div>
 
-                <textarea
-                  className="w-full border border-slate-200 outline-none p-2"
-                  cols="30"
-                  rows="5"
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                ></textarea>
-              </DialogContent>
-              <DialogActions>
-                <Button
-                  onClick={submitReviewToggle}
-                  color="secondary"
-                  className="uppercase"
-                >
-                  Trở lại
-                </Button>
-                <Button onClick={reviewSubmitHandler} color="primary">
-                  Hoàn Thành
-                </Button>
-              </DialogActions>
+                    <textarea
+                      className="w-full border border-slate-200 outline-none p-2"
+                      cols="30"
+                      rows="5"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                    ></textarea>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button
+                      onClick={submitReviewToggle}
+                      color="secondary"
+                      className="uppercase"
+                    >
+                      Trở lại
+                    </Button>
+                    <Button onClick={reviewSubmitHandler} color="primary">
+                      Hoàn Thành
+                    </Button>
+                  </DialogActions>
+                </Fragment>
+              ) : (
+                <Fragment>
+                  <DialogTitle>
+                    Vui lòng mua sản phẩm trước khi Đánh giá Bạn nhé 😥😥
+                  </DialogTitle>
+                  <DialogActions>
+                    <Button
+                      onClick={submitReviewToggle}
+                      color="secondary"
+                      className="uppercase"
+                    >
+                      Trở lại
+                    </Button>
+                  </DialogActions>
+                </Fragment>
+              )}
             </Dialog>
 
             <div className="page-container flex flex-col gap-4 bg-white rounded-[3px] shadow-sm p-6 my-4">
@@ -726,7 +474,7 @@ const ProductDetails = ({ match }) => {
                   onClick={submitReviewToggle}
                   className="bg-primary text-white opacity-80 py-2 px-4 hover:opacity- rounded-[3px] cursor-pointer"
                 >
-                  Bình Luận
+                  Đánh giá
                 </button>
               </div>
               {product?.reviews && product?.reviews[0] ? (

@@ -19,7 +19,7 @@ class ApiFeatures {
     const queryCopy = { ...this.queryStr };
     console.log(queryCopy);
     // Removing some fields for category
-    const removeFields = ["keyword", "page", "limit"];
+    const removeFields = ["keyword", "page", "limit", "type"];
     removeFields.forEach((key) => delete queryCopy[key]);
 
     // Filter for Price and Rating
@@ -43,13 +43,17 @@ class ApiFeatures {
     return this;
   }
 
-  // sort(field) {
-  //   // const sort = Number(this.queryStr.page);
-  //   this.query = this.query.sort((a, b) => {
-  //     return a[field] >= b[field] ? 1 : -1;
-  //   });
-  //   return this;
-  // }
+  sort() {
+    const type = this.queryStr.type;
+
+    const sort = type === "desc" ? -1 : type === "asc" && 1;
+    const sortObject = sort && { price: sort };
+    console.log("sort", { sort });
+
+    this.query = this.query.sort(sortObject);
+
+    return this;
+  }
 }
 
 module.exports = ApiFeatures;
